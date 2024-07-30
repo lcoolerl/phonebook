@@ -3,11 +3,31 @@ from os.path import exists
 
 filename = 'phone.csv'
 
+class NameError (Exception):
+    def __init__(self, txt):
+        self.txt = txt
+
 def get_data():
-    first_name = "Иван"
-    last_name = "Иванов"
-    phone = "+73287282037"
-    return [first_name, last_name, phone]
+    flag = False
+    while not flag:
+        try:
+            first_name = input("Введите имя :")
+            if len(first_name) < 2:
+                raise NameError("Слишком короткое имя")
+            last_name = input("Введите фамилию :")
+            if len(last_name) < 2:
+                raise NameError("Слишком короткая фамилия")
+            phone = input("Введите номер : +7")
+            if len(phone) < 10:
+                raise NameError("Введен короткий номер")
+        except NameError as err:
+            print(err)
+        else:
+            flag = True
+    # first_name = "Иван"
+    # last_name = "Иванов"
+    # phone = "+73287282037"
+    # return [first_name, last_name, phone]
 
 
 def create_file(filename):
@@ -72,7 +92,7 @@ def main():
             if not exists(filename):
                 create_file(filename)
             write_file(filename, get_data())
-        elif command == "r":    # команда считывания и вывода
+        elif command == "r":    # команда считывания и вывода файла
             if not exists(filename):
                 print("Файл не существует. Создайте его.")
                 continue
@@ -82,12 +102,12 @@ def main():
                 print("Файл не существует. Создайте его.")
                 continue
             print(row_search(filename))
-        elif command == "d":    # команда удаления строки по номеру
+        elif command == "d":    # команда удаления строки с №
             if not exists(filename):
                 print("Файл не существует. Создайте его.")
                 continue
             delete_row(filename)
-        elif command == "e":    # команда редактирования строки
+        elif command == "e":    # команда редактирования строки с №
             if not exists(filename):
                 print("Файл не существует. Создайте его.")
                 continue
