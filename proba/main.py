@@ -2,6 +2,7 @@ from csv import DictWriter, DictReader
 from os.path import exists
 
 filename = 'phone.csv'
+newfile = 'new_phone.csv'
 
 class NameError (Exception):
     def __init__(self, txt):
@@ -27,7 +28,7 @@ def get_data():
     # first_name = "Иван"
     # last_name = "Иванов"
     # phone = "+73287282037"
-    # return [first_name, last_name, phone]
+    return [first_name, last_name, phone]
 
 
 def create_file(filename):
@@ -59,7 +60,6 @@ def row_search(filename):
 
 
 def delete_row(filename):
-    row_number = int(input("Введите номер строки: "))
     res = read_file(filename)
     res.pop(row_number-1)
     standard_write(filename, res)
@@ -74,14 +74,27 @@ def standard_write(filename, res):
 
 def edit_row(filename):
     row_number = int(input("Введите номер строки: "))
-    res = read_file(filename)
+    
     data = get_data()
     res[row_number-1]["Имя"] = data[0]
     res[row_number-1]["Фамилия"] = data[1]
     res[row_number-1]["Телефон"] = data[2]
     standard_write(filename, res)
 
+def copy_to_new_file(filename, newfile):
+    if not exists(newfile):
+        create_file(newfile)
+    row_number = int(input("Введите номер строки: "))
+    res1 = read_file(filename)
+    res2 = read_file(newfile)
+    # obj = {'Имя': lst[0], 'Фамилия': lst[1], 'Телефон': lst[2]}
+    res2.append(res1[row_number-1])
+    standard_write(newfile, res2)
 
+# def exam_file(filename): # функция проверки существования файла
+#     if not exists(filename):
+#         print("Файл не существует. Создайте его.321")
+#         return (continue)
 
 def main():
     while True:
@@ -96,7 +109,9 @@ def main():
             if not exists(filename):
                 print("Файл не существует. Создайте его.")
                 continue
-            print(read_file(filename))
+            out_d = read_file(filename)
+            for row in out_d:
+                print ("Имя :",row['Имя']," ","Фамилия :",row['Фамилия']," ","Телефон :",row['Телефон'])
         elif command == "f":    # команда поиска по фамилии
             if not exists(filename):
                 print("Файл не существует. Создайте его.")
@@ -112,6 +127,11 @@ def main():
                 print("Файл не существует. Создайте его.")
                 continue
             edit_row(filename)
+        elif command == "c":    # команда копирования строки в новый справочник
+            if not exists(filename):
+                print("Файл не существует. Создайте его.")
+                continue
+            copy_to_new_file(filename, newfile)
 
 
 main()
